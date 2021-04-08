@@ -1,0 +1,70 @@
+scalar Time
+scalar Upload
+
+type AuthToken {
+  accessToken: String!
+  expiredAt: Time!
+}
+
+type AuthResponse {
+  authToken: AuthToken!
+  user: User!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+"The `LoginInput` type represents the required login input"
+input LoginInput {
+  "The `username` can either be an email or the actual username"
+  username: String!
+  "The `password` length must be 8 characters minimum"
+  password: String!
+}
+
+input PushSetupEventMessage {
+  "The state of this setup event"
+  state: Int!
+  "A message associated with this event"
+  message: String!
+}
+
+type SetupInfoEvent {
+  "The state of this setup event"
+  state: Int!
+  "A message associated with this event"
+  message: String!
+}
+
+type BlitzDeviceInfo {
+  version: String!
+}
+
+type Query {
+  blitzDeviceInfo: BlitzDeviceInfo!
+}
+
+
+type Mutation {
+  register(input: RegisterInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
+
+  pushSetupEvent(input: PushSetupEventMessage!): Boolean
+}
+
+type Subscription {
+  "Subscribes to all setup events"
+  setupEvents: SetupInfoEvent!
+}
