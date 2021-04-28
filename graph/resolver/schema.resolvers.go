@@ -32,26 +32,26 @@ func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*
 	return r.Domain.Login(ctx, input)
 }
 
-func (r *mutationResolver) PushSetupEvent(ctx context.Context, input model.PushSetupEventMessage) (*bool, error) {
-	r.Domain.PushSetupEvent(&input)
-	return nil, nil
+func (r *mutationResolver) PushUpdatedDeviceInfo(ctx context.Context, input model.UpdatedDeviceInfo) (*model.DeviceInfo, error) {
+	r.Domain.PushUpdatedDeviceInfo(&input)
+	return &model.DeviceInfo{State: input.State, Message: input.Message}, nil
 }
 
-func (r *queryResolver) BlitzDeviceInfo(ctx context.Context) (*model.BlitzDeviceInfo, error) {
+func (r *queryResolver) DeviceInfo(ctx context.Context) (*model.DeviceInfo, error) {
 	return r.Domain.InfoRepo.GetInfo()
 }
 
-func (r *subscriptionResolver) SetupEvents(ctx context.Context) (<-chan *model.SetupInfoEvent, error) {
+func (r *subscriptionResolver) DeviceInfo(ctx context.Context) (<-chan *model.DeviceInfo, error) {
 	// Get a random ID for the observer
 	id := utils.RandString(8)
 
 	go func() {
 		// Delete the observer once the client disconnects
 		<-ctx.Done()
-		r.Domain.SetupRepo.DeleteObserver(id)
+		r.Domain.SetupRepo.DeleteDeviceInfoObserver(id)
 	}()
 
-	channel := r.Domain.SetupRepo.AddObserver(id)
+	channel := r.Domain.SetupRepo.AddDeviceInfoObserver(id)
 
 	return channel, nil
 }

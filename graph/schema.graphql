@@ -34,37 +34,41 @@ input LoginInput {
   password: String!
 }
 
-input PushSetupEventMessage {
-  "The state of this setup event"
-  state: Int!
-  "A message associated with this event"
-  message: String!
+input UpdatedDeviceInfo {
+  setupStep: Int
+  state: String
+  chain: String
+  network: String
+  message: String
+  hostName: String
 }
 
-type SetupInfoEvent {
-  "The state of this setup event"
-  state: Int!
-  "A message associated with this event"
-  message: String!
-}
-
-type BlitzDeviceInfo {
+type DeviceInfo {
   version: String!
+  setupStep: Int!
+  baseImage: String!
+  cpu: String!
+  isDocker: Boolean!
+  state: String
+  chain: String
+  network: String
+  message: String
+  hostName: String
 }
 
 type Query {
-  blitzDeviceInfo: BlitzDeviceInfo!
+  "Get latest device information"
+  deviceInfo: DeviceInfo!
 }
-
 
 type Mutation {
   register(input: RegisterInput!): AuthResponse!
   login(input: LoginInput!): AuthResponse!
 
-  pushSetupEvent(input: PushSetupEventMessage!): Boolean
+  pushUpdatedDeviceInfo(input: UpdatedDeviceInfo!): DeviceInfo
 }
 
 type Subscription {
-  "Subscribes to all setup events"
-  setupEvents: SetupInfoEvent!
+  "Subscribes to device info changes"
+  deviceInfo: DeviceInfo!
 }

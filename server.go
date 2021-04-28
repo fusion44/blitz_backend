@@ -30,7 +30,7 @@ import (
 var AppConfig *gcontext.Config
 
 func main() {
-	AppConfig := gcontext.LoadConfig(".")
+	AppConfig := gcontext.LoadConfig("/home/admin/backend")
 	logger := service.NewLogger(AppConfig)
 
 	DB := db.New(AppConfig)

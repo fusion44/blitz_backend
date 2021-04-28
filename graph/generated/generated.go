@@ -56,27 +56,31 @@ type ComplexityRoot struct {
 		ExpiredAt   func(childComplexity int) int
 	}
 
-	BlitzDeviceInfo struct {
-		Version func(childComplexity int) int
+	DeviceInfo struct {
+		BaseImage func(childComplexity int) int
+		CPU       func(childComplexity int) int
+		Chain     func(childComplexity int) int
+		HostName  func(childComplexity int) int
+		IsDocker  func(childComplexity int) int
+		Message   func(childComplexity int) int
+		Network   func(childComplexity int) int
+		SetupStep func(childComplexity int) int
+		State     func(childComplexity int) int
+		Version   func(childComplexity int) int
 	}
 
 	Mutation struct {
-		Login          func(childComplexity int, input model.LoginInput) int
-		PushSetupEvent func(childComplexity int, input model.PushSetupEventMessage) int
-		Register       func(childComplexity int, input model.RegisterInput) int
+		Login                 func(childComplexity int, input model.LoginInput) int
+		PushUpdatedDeviceInfo func(childComplexity int, input model.UpdatedDeviceInfo) int
+		Register              func(childComplexity int, input model.RegisterInput) int
 	}
 
 	Query struct {
-		BlitzDeviceInfo func(childComplexity int) int
-	}
-
-	SetupInfoEvent struct {
-		Message func(childComplexity int) int
-		State   func(childComplexity int) int
+		DeviceInfo func(childComplexity int) int
 	}
 
 	Subscription struct {
-		SetupEvents func(childComplexity int) int
+		DeviceInfo func(childComplexity int) int
 	}
 
 	User struct {
@@ -91,13 +95,13 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	Register(ctx context.Context, input model.RegisterInput) (*model.AuthResponse, error)
 	Login(ctx context.Context, input model.LoginInput) (*model.AuthResponse, error)
-	PushSetupEvent(ctx context.Context, input model.PushSetupEventMessage) (*bool, error)
+	PushUpdatedDeviceInfo(ctx context.Context, input model.UpdatedDeviceInfo) (*model.DeviceInfo, error)
 }
 type QueryResolver interface {
-	BlitzDeviceInfo(ctx context.Context) (*model.BlitzDeviceInfo, error)
+	DeviceInfo(ctx context.Context) (*model.DeviceInfo, error)
 }
 type SubscriptionResolver interface {
-	SetupEvents(ctx context.Context) (<-chan *model.SetupInfoEvent, error)
+	DeviceInfo(ctx context.Context) (<-chan *model.DeviceInfo, error)
 }
 
 type executableSchema struct {
@@ -143,12 +147,75 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AuthToken.ExpiredAt(childComplexity), true
 
-	case "BlitzDeviceInfo.version":
-		if e.complexity.BlitzDeviceInfo.Version == nil {
+	case "DeviceInfo.baseImage":
+		if e.complexity.DeviceInfo.BaseImage == nil {
 			break
 		}
 
-		return e.complexity.BlitzDeviceInfo.Version(childComplexity), true
+		return e.complexity.DeviceInfo.BaseImage(childComplexity), true
+
+	case "DeviceInfo.cpu":
+		if e.complexity.DeviceInfo.CPU == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.CPU(childComplexity), true
+
+	case "DeviceInfo.chain":
+		if e.complexity.DeviceInfo.Chain == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.Chain(childComplexity), true
+
+	case "DeviceInfo.hostName":
+		if e.complexity.DeviceInfo.HostName == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.HostName(childComplexity), true
+
+	case "DeviceInfo.isDocker":
+		if e.complexity.DeviceInfo.IsDocker == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.IsDocker(childComplexity), true
+
+	case "DeviceInfo.message":
+		if e.complexity.DeviceInfo.Message == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.Message(childComplexity), true
+
+	case "DeviceInfo.network":
+		if e.complexity.DeviceInfo.Network == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.Network(childComplexity), true
+
+	case "DeviceInfo.setupStep":
+		if e.complexity.DeviceInfo.SetupStep == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.SetupStep(childComplexity), true
+
+	case "DeviceInfo.state":
+		if e.complexity.DeviceInfo.State == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.State(childComplexity), true
+
+	case "DeviceInfo.version":
+		if e.complexity.DeviceInfo.Version == nil {
+			break
+		}
+
+		return e.complexity.DeviceInfo.Version(childComplexity), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -162,17 +229,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Login(childComplexity, args["input"].(model.LoginInput)), true
 
-	case "Mutation.pushSetupEvent":
-		if e.complexity.Mutation.PushSetupEvent == nil {
+	case "Mutation.pushUpdatedDeviceInfo":
+		if e.complexity.Mutation.PushUpdatedDeviceInfo == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_pushSetupEvent_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_pushUpdatedDeviceInfo_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.PushSetupEvent(childComplexity, args["input"].(model.PushSetupEventMessage)), true
+		return e.complexity.Mutation.PushUpdatedDeviceInfo(childComplexity, args["input"].(model.UpdatedDeviceInfo)), true
 
 	case "Mutation.register":
 		if e.complexity.Mutation.Register == nil {
@@ -186,33 +253,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.RegisterInput)), true
 
-	case "Query.blitzDeviceInfo":
-		if e.complexity.Query.BlitzDeviceInfo == nil {
+	case "Query.deviceInfo":
+		if e.complexity.Query.DeviceInfo == nil {
 			break
 		}
 
-		return e.complexity.Query.BlitzDeviceInfo(childComplexity), true
+		return e.complexity.Query.DeviceInfo(childComplexity), true
 
-	case "SetupInfoEvent.message":
-		if e.complexity.SetupInfoEvent.Message == nil {
+	case "Subscription.deviceInfo":
+		if e.complexity.Subscription.DeviceInfo == nil {
 			break
 		}
 
-		return e.complexity.SetupInfoEvent.Message(childComplexity), true
-
-	case "SetupInfoEvent.state":
-		if e.complexity.SetupInfoEvent.State == nil {
-			break
-		}
-
-		return e.complexity.SetupInfoEvent.State(childComplexity), true
-
-	case "Subscription.setupEvents":
-		if e.complexity.Subscription.SetupEvents == nil {
-			break
-		}
-
-		return e.complexity.Subscription.SetupEvents(childComplexity), true
+		return e.complexity.Subscription.DeviceInfo(childComplexity), true
 
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
@@ -366,39 +419,43 @@ input LoginInput {
   password: String!
 }
 
-input PushSetupEventMessage {
-  "The state of this setup event"
-  state: Int!
-  "A message associated with this event"
-  message: String!
+input UpdatedDeviceInfo {
+  setupStep: Int
+  state: String
+  chain: String
+  network: String
+  message: String
+  hostName: String
 }
 
-type SetupInfoEvent {
-  "The state of this setup event"
-  state: Int!
-  "A message associated with this event"
-  message: String!
-}
-
-type BlitzDeviceInfo {
+type DeviceInfo {
   version: String!
+  setupStep: Int!
+  baseImage: String!
+  cpu: String!
+  isDocker: Boolean!
+  state: String
+  chain: String
+  network: String
+  message: String
+  hostName: String
 }
 
 type Query {
-  blitzDeviceInfo: BlitzDeviceInfo!
+  "Get latest device information"
+  deviceInfo: DeviceInfo!
 }
-
 
 type Mutation {
   register(input: RegisterInput!): AuthResponse!
   login(input: LoginInput!): AuthResponse!
 
-  pushSetupEvent(input: PushSetupEventMessage!): Boolean
+  pushUpdatedDeviceInfo(input: UpdatedDeviceInfo!): DeviceInfo
 }
 
 type Subscription {
-  "Subscribes to all setup events"
-  setupEvents: SetupInfoEvent!
+  "Subscribes to device info changes"
+  deviceInfo: DeviceInfo!
 }
 `, BuiltIn: false},
 }
@@ -423,13 +480,13 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_pushSetupEvent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_pushUpdatedDeviceInfo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.PushSetupEventMessage
+	var arg0 model.UpdatedDeviceInfo
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNPushSetupEventMessage2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐPushSetupEventMessage(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdatedDeviceInfo2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐUpdatedDeviceInfo(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -646,7 +703,7 @@ func (ec *executionContext) _AuthToken_expiredAt(ctx context.Context, field grap
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BlitzDeviceInfo_version(ctx context.Context, field graphql.CollectedField, obj *model.BlitzDeviceInfo) (ret graphql.Marshaler) {
+func (ec *executionContext) _DeviceInfo_version(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -654,7 +711,7 @@ func (ec *executionContext) _BlitzDeviceInfo_version(ctx context.Context, field 
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "BlitzDeviceInfo",
+		Object:     "DeviceInfo",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -679,6 +736,306 @@ func (ec *executionContext) _BlitzDeviceInfo_version(ctx context.Context, field 
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_setupStep(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SetupStep, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_baseImage(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BaseImage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_cpu(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CPU, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_isDocker(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDocker, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_state(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_chain(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Chain, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_network(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Network, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_message(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Message, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _DeviceInfo_hostName(ctx context.Context, field graphql.CollectedField, obj *model.DeviceInfo) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "DeviceInfo",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HostName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_register(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -765,7 +1122,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_pushSetupEvent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_pushUpdatedDeviceInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -782,7 +1139,7 @@ func (ec *executionContext) _Mutation_pushSetupEvent(ctx context.Context, field 
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_pushSetupEvent_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_pushUpdatedDeviceInfo_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -790,7 +1147,7 @@ func (ec *executionContext) _Mutation_pushSetupEvent(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().PushSetupEvent(rctx, args["input"].(model.PushSetupEventMessage))
+		return ec.resolvers.Mutation().PushUpdatedDeviceInfo(rctx, args["input"].(model.UpdatedDeviceInfo))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -799,12 +1156,12 @@ func (ec *executionContext) _Mutation_pushSetupEvent(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*model.DeviceInfo)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalODeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_blitzDeviceInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_deviceInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -822,7 +1179,7 @@ func (ec *executionContext) _Query_blitzDeviceInfo(ctx context.Context, field gr
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().BlitzDeviceInfo(rctx)
+		return ec.resolvers.Query().DeviceInfo(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -834,9 +1191,9 @@ func (ec *executionContext) _Query_blitzDeviceInfo(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.BlitzDeviceInfo)
+	res := resTmp.(*model.DeviceInfo)
 	fc.Result = res
-	return ec.marshalNBlitzDeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐBlitzDeviceInfo(ctx, field.Selections, res)
+	return ec.marshalNDeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -910,77 +1267,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SetupInfoEvent_state(ctx context.Context, field graphql.CollectedField, obj *model.SetupInfoEvent) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "SetupInfoEvent",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.State, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _SetupInfoEvent_message(ctx context.Context, field graphql.CollectedField, obj *model.SetupInfoEvent) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "SetupInfoEvent",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Subscription_setupEvents(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+func (ec *executionContext) _Subscription_deviceInfo(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -998,7 +1285,7 @@ func (ec *executionContext) _Subscription_setupEvents(ctx context.Context, field
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().SetupEvents(rctx)
+		return ec.resolvers.Subscription().DeviceInfo(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1011,7 +1298,7 @@ func (ec *executionContext) _Subscription_setupEvents(ctx context.Context, field
 		return nil
 	}
 	return func() graphql.Marshaler {
-		res, ok := <-resTmp.(<-chan *model.SetupInfoEvent)
+		res, ok := <-resTmp.(<-chan *model.DeviceInfo)
 		if !ok {
 			return nil
 		}
@@ -1019,7 +1306,7 @@ func (ec *executionContext) _Subscription_setupEvents(ctx context.Context, field
 			w.Write([]byte{'{'})
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
-			ec.marshalNSetupInfoEvent2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐSetupInfoEvent(ctx, field.Selections, res).MarshalGQL(w)
+			ec.marshalNDeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -2315,34 +2602,6 @@ func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj in
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPushSetupEventMessage(ctx context.Context, obj interface{}) (model.PushSetupEventMessage, error) {
-	var it model.PushSetupEventMessage
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "state":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
-			it.State, err = ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "message":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("message"))
-			it.Message, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputRegisterInput(ctx context.Context, obj interface{}) (model.RegisterInput, error) {
 	var it model.RegisterInput
 	var asMap = obj.(map[string]interface{})
@@ -2378,6 +2637,66 @@ func (ec *executionContext) unmarshalInputRegisterInput(ctx context.Context, obj
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("confirmPassword"))
 			it.ConfirmPassword, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdatedDeviceInfo(ctx context.Context, obj interface{}) (model.UpdatedDeviceInfo, error) {
+	var it model.UpdatedDeviceInfo
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "setupStep":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setupStep"))
+			it.SetupStep, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
+			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "chain":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("chain"))
+			it.Chain, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "network":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("network"))
+			it.Network, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "message":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("message"))
+			it.Message, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hostName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hostName"))
+			it.HostName, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2459,22 +2778,52 @@ func (ec *executionContext) _AuthToken(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
-var blitzDeviceInfoImplementors = []string{"BlitzDeviceInfo"}
+var deviceInfoImplementors = []string{"DeviceInfo"}
 
-func (ec *executionContext) _BlitzDeviceInfo(ctx context.Context, sel ast.SelectionSet, obj *model.BlitzDeviceInfo) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, blitzDeviceInfoImplementors)
+func (ec *executionContext) _DeviceInfo(ctx context.Context, sel ast.SelectionSet, obj *model.DeviceInfo) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, deviceInfoImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BlitzDeviceInfo")
+			out.Values[i] = graphql.MarshalString("DeviceInfo")
 		case "version":
-			out.Values[i] = ec._BlitzDeviceInfo_version(ctx, field, obj)
+			out.Values[i] = ec._DeviceInfo_version(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "setupStep":
+			out.Values[i] = ec._DeviceInfo_setupStep(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "baseImage":
+			out.Values[i] = ec._DeviceInfo_baseImage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "cpu":
+			out.Values[i] = ec._DeviceInfo_cpu(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "isDocker":
+			out.Values[i] = ec._DeviceInfo_isDocker(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "state":
+			out.Values[i] = ec._DeviceInfo_state(ctx, field, obj)
+		case "chain":
+			out.Values[i] = ec._DeviceInfo_chain(ctx, field, obj)
+		case "network":
+			out.Values[i] = ec._DeviceInfo_network(ctx, field, obj)
+		case "message":
+			out.Values[i] = ec._DeviceInfo_message(ctx, field, obj)
+		case "hostName":
+			out.Values[i] = ec._DeviceInfo_hostName(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2511,8 +2860,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "pushSetupEvent":
-			out.Values[i] = ec._Mutation_pushSetupEvent(ctx, field)
+		case "pushUpdatedDeviceInfo":
+			out.Values[i] = ec._Mutation_pushUpdatedDeviceInfo(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2539,7 +2888,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "blitzDeviceInfo":
+		case "deviceInfo":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -2547,7 +2896,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_blitzDeviceInfo(ctx, field)
+				res = ec._Query_deviceInfo(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2557,38 +2906,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var setupInfoEventImplementors = []string{"SetupInfoEvent"}
-
-func (ec *executionContext) _SetupInfoEvent(ctx context.Context, sel ast.SelectionSet, obj *model.SetupInfoEvent) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, setupInfoEventImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("SetupInfoEvent")
-		case "state":
-			out.Values[i] = ec._SetupInfoEvent_state(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "message":
-			out.Values[i] = ec._SetupInfoEvent_message(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2613,8 +2930,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	}
 
 	switch fields[0].Name {
-	case "setupEvents":
-		return ec._Subscription_setupEvents(ctx, fields[0])
+	case "deviceInfo":
+		return ec._Subscription_deviceInfo(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
@@ -2936,20 +3253,6 @@ func (ec *executionContext) marshalNAuthToken2ᚖgithubᚗcomᚋfusion44ᚋraspi
 	return ec._AuthToken(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNBlitzDeviceInfo2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐBlitzDeviceInfo(ctx context.Context, sel ast.SelectionSet, v model.BlitzDeviceInfo) graphql.Marshaler {
-	return ec._BlitzDeviceInfo(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNBlitzDeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐBlitzDeviceInfo(ctx context.Context, sel ast.SelectionSet, v *model.BlitzDeviceInfo) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._BlitzDeviceInfo(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2963,6 +3266,20 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNDeviceInfo2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx context.Context, sel ast.SelectionSet, v model.DeviceInfo) graphql.Marshaler {
+	return ec._DeviceInfo(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNDeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx context.Context, sel ast.SelectionSet, v *model.DeviceInfo) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._DeviceInfo(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
@@ -3000,28 +3317,9 @@ func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋfusion44ᚋraspi
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNPushSetupEventMessage2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐPushSetupEventMessage(ctx context.Context, v interface{}) (model.PushSetupEventMessage, error) {
-	res, err := ec.unmarshalInputPushSetupEventMessage(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐRegisterInput(ctx context.Context, v interface{}) (model.RegisterInput, error) {
 	res, err := ec.unmarshalInputRegisterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNSetupInfoEvent2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐSetupInfoEvent(ctx context.Context, sel ast.SelectionSet, v model.SetupInfoEvent) graphql.Marshaler {
-	return ec._SetupInfoEvent(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNSetupInfoEvent2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐSetupInfoEvent(ctx context.Context, sel ast.SelectionSet, v *model.SetupInfoEvent) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._SetupInfoEvent(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -3052,6 +3350,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUpdatedDeviceInfo2githubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐUpdatedDeviceInfo(ctx context.Context, v interface{}) (model.UpdatedDeviceInfo, error) {
+	res, err := ec.unmarshalInputUpdatedDeviceInfo(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
@@ -3315,6 +3618,28 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
+}
+
+func (ec *executionContext) marshalODeviceInfo2ᚖgithubᚗcomᚋfusion44ᚋraspiblitzᚑbackendᚋgraphᚋmodelᚐDeviceInfo(ctx context.Context, sel ast.SelectionSet, v *model.DeviceInfo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._DeviceInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

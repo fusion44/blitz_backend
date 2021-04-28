@@ -16,8 +16,17 @@ type AuthToken struct {
 	ExpiredAt   time.Time `json:"expiredAt"`
 }
 
-type BlitzDeviceInfo struct {
-	Version string `json:"version"`
+type DeviceInfo struct {
+	Version   string  `json:"version"`
+	SetupStep int     `json:"setupStep"`
+	BaseImage string  `json:"baseImage"`
+	CPU       string  `json:"cpu"`
+	IsDocker  bool    `json:"isDocker"`
+	State     *string `json:"state"`
+	Chain     *string `json:"chain"`
+	Network   *string `json:"network"`
+	Message   *string `json:"message"`
+	HostName  *string `json:"hostName"`
 }
 
 // The `LoginInput` type represents the required login input
@@ -28,13 +37,6 @@ type LoginInput struct {
 	Password string `json:"password"`
 }
 
-type PushSetupEventMessage struct {
-	// The state of this setup event
-	State int `json:"state"`
-	// A message associated with this event
-	Message string `json:"message"`
-}
-
 type RegisterInput struct {
 	Username        string `json:"username"`
 	Email           string `json:"email"`
@@ -42,9 +44,11 @@ type RegisterInput struct {
 	ConfirmPassword string `json:"confirmPassword"`
 }
 
-type SetupInfoEvent struct {
-	// The state of this setup event
-	State int `json:"state"`
-	// A message associated with this event
-	Message string `json:"message"`
+type UpdatedDeviceInfo struct {
+	SetupStep *int    `json:"setupStep"`
+	State     *string `json:"state"`
+	Chain     *string `json:"chain"`
+	Network   *string `json:"network"`
+	Message   *string `json:"message"`
+	HostName  *string `json:"hostName"`
 }

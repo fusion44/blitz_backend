@@ -31,6 +31,7 @@ func LoadConfig(path string) *Config {
 	config := viper.New()
 	config.SetConfigName("config")
 	config.AddConfigPath(".")
+	config.AddConfigPath(path)
 	err := config.ReadInConfig()
 	if err != nil {
 		log.Fatalf("Fatal error context file: %s \n", err)

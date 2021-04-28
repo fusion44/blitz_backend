@@ -8,36 +8,36 @@ import (
 
 // SetupRepository contains all functions regarding the setup
 type SetupRepository struct {
-	mu        sync.Mutex
-	Observers map[string]struct {
+	mu                  sync.Mutex
+	SetupEventObservers map[string]struct {
 		ID      string
-		Channel chan *model.SetupInfoEvent
+		Channel chan *model.DeviceInfo
 	}
 }
 
-func New() *SetupRepository {
-	return &SetupRepository{Observers: make(map[string]struct {
+func NewSetupRepository() *SetupRepository {
+	return &SetupRepository{SetupEventObservers: make(map[string]struct {
 		ID      string
-		Channel chan *model.SetupInfoEvent
+		Channel chan *model.DeviceInfo
 	})}
 }
 
-func (r *SetupRepository) AddObserver(id string) chan *model.SetupInfoEvent {
+func (r *SetupRepository) AddDeviceInfoObserver(id string) chan *model.DeviceInfo {
 	// Make the channel
-	channel := make(chan *model.SetupInfoEvent, 1)
+	channel := make(chan *model.DeviceInfo, 1)
 
 	r.mu.Lock()
-	r.Observers[id] = struct {
+	r.SetupEventObservers[id] = struct {
 		ID      string
-		Channel chan *model.SetupInfoEvent
+		Channel chan *model.DeviceInfo
 	}{ID: id, Channel: channel}
 	r.mu.Unlock()
 
 	return channel
 }
 
-func (r *SetupRepository) DeleteObserver(id string) {
+func (r *SetupRepository) DeleteDeviceInfoObserver(id string) {
 	r.mu.Lock()
-	delete(r.Observers, id)
+	delete(r.SetupEventObservers, id)
 	r.mu.Unlock()
 }

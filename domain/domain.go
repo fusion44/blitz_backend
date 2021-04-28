@@ -32,8 +32,8 @@ func NewDomain(
 ) *Domain {
 	return &Domain{
 		UsersRepo: &usersRepo,
-		InfoRepo:  &infoRepo,
-		SetupRepo: repositories.New()}
+		InfoRepo:  repositories.NewBlitzInfoRepository(),
+		SetupRepo: repositories.NewSetupRepository()}
 }
 
 // Ownable makes an object ownable by an user
